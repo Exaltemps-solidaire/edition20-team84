@@ -38,7 +38,20 @@
 - **Fichiers prévus** : `frontend/src/app/page.tsx`, un composant d'affichage de la fiche/schéma, `.env.example`, `DEPLOIEMENT.md`, `app/podman-compose.yml` (~5 fichiers, hors tests)
 - **Tests unitaires prévus** : aucune règle métier dans cette itération (affichage de données statiques) → 0 test, conforme à la DoD qui exclut les tests sur du balisage pur. Si une règle apparaît (ex. calcul d'ancienneté de la mesure), elle sera testée.
 - **Étapes ajoutées à la démo** (`e2e/demo.spec.ts`) : ouvrir la page, vérifier la présence de « Famille Martin » et des 3 actions.
-- **Bilan** : _à remplir en fin d'itération._
+- **Bilan** :
+  - Durée de codage réelle : 2 minutes (pas de dépassement).
+  - Critères satisfaits : les 3. Page accessible, `/health` et `/sante` répondent 200 sur les deux services (vérifié par curl), clic sur une action affiche un message « écran à venir » sans erreur.
+  - Reporté : rien.
+  - Harnais : `./scripts/verifier-deployabilite.sh` → aucune borne ni alarme. `npm test` → 2 tests existants passent (aucun test métier nouveau : cette itération n'a que de l'affichage statique). `./scripts/signaler-version.sh 1` accepté du premier coup.
+  - Démo (`e2e/demo.spec.ts`) étendue avec les 2 nouvelles étapes et rejouée contre `localhost:8080` (déploiement local) : passe. `URL_PUBLIQUE` non testable depuis la machine (injoignable par construction) — à vérifier par le développeur dans son navigateur.
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` : remplace la page de démarrage Next.js par l'écran « Vue de la situation » (fiche, schéma des acteurs, 3 actions cliquables) — sert les 3 critères.
+    - `frontend/src/app/page.module.css` : styles de l'écran, repris du prototype — sert les 3 critères.
+    - `frontend/Dockerfile`, `api/Dockerfile` : images de base qualifiées en `docker.io/library/...` — nécessaire au build sur cette machine (recette du `/CLAUDE.md` racine).
+    - `.env.example` : liste `PORT` (seule variable lue pour l'instant) — contrat de déployabilité, règle 2.
+    - `DEPLOIEMENT.md` : page de déploiement du dépôt — contrat de déployabilité, règle 8.
+    - `podman-compose.yml` : rejoint `core-network`, publie 8080/8081 — recette de déploiement du serveur.
+    - `e2e/demo.spec.ts` : 2 étapes ajoutées (vérifier l'écran, cliquer une action) — démonstration, hors DoD.
 
 ## Itération 2 : L'écran de rédaction du rapport est visible et navigable
 
