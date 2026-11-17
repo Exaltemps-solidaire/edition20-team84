@@ -19,6 +19,7 @@ const TEXTE_RAPPORT =
 export default function Home() {
   const [ecran, setEcran] = useState<Ecran>("situation");
   const [envoye, setEnvoye] = useState(false);
+  const [notes, setNotes] = useState("");
 
   if (ecran === "rapport") {
     return (
@@ -35,7 +36,7 @@ export default function Home() {
           </div>
 
           <div className={styles.placeholder}>
-            ✦ Notes capturées : 3 points clés repérés pendant l&apos;échange
+            ✦ {notes.trim() ? notes : "Aucune note saisie pour cette visite."}
           </div>
 
           <div className={styles.rapportBloc}>
@@ -99,6 +100,14 @@ export default function Home() {
           </div>
           <div className={styles.versParent}>→ Parent · M. Martin</div>
         </div>
+
+        <div className={styles.sectionTitle}>Mes notes</div>
+        <textarea
+          className={styles.notesInput}
+          placeholder="Ce que je vois, ce que j'entends pendant la visite…"
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+        />
 
         <div className={styles.sectionTitle}>Que faire maintenant ?</div>
         <div className={styles.actionList}>

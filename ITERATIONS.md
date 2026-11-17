@@ -100,7 +100,16 @@
 - **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css` (~2 fichiers, hors tests)
 - **Tests unitaires prévus** : aucune règle métier isolable pour l'instant (état de saisie simple) → à réévaluer si une règle de validation apparaît.
 - **Étapes ajoutées à la démo** : saisir une note sur l'écran 1, vérifier sa présence sur l'écran rapport.
-- **Bilan** : _à remplir en fin d'itération._
+- **Bilan** :
+  - Durée de codage réelle : 1 minute (pas de dépassement).
+  - Critères satisfaits : les 3. La note saisie persiste en state React entre les deux écrans ; un texte par défaut s'affiche si aucune note n'est saisie ; une note saisie apparaît bien sur l'écran rapport.
+  - Reporté : rien.
+  - Harnais : `./scripts/verifier-deployabilite.sh` → aucune borne ni alarme. `npm test` → 5 tests passent (aucun test métier nouveau : simple état de saisie, pas de règle à isoler). `./scripts/signaler-version.sh 3` accepté du premier coup.
+  - Démo (`e2e/demo.spec.ts`) étendue avec l'étape de saisie de note et rejouée contre `localhost:8080` : passe. `URL_PUBLIQUE` non testable depuis la machine — à vérifier par le développeur.
+  - **Modifications** :
+    - `frontend/src/app/page.tsx` : ajoute un `<textarea>` de notes sur l'écran « Vue de la situation » (state `notes`), et affiche ces notes (ou un texte par défaut) sur l'écran rapport à la place du placeholder figé — sert les 3 critères.
+    - `frontend/src/app/page.module.css` : style `.notesInput` — sert les 3 critères.
+    - `e2e/demo.spec.ts` : étape de saisie de note ajoutée, et vérification de sa présence sur l'écran rapport — démonstration, hors DoD.
 
 ## À venir (non détaillé)
 

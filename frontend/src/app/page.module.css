@@ -205,6 +205,19 @@
   text-align: center;
 }
 
+.notesInput {
+  margin: 0 16px;
+  padding: 12px;
+  min-height: 72px;
+  resize: vertical;
+  font: inherit;
+  font-size: 15px;
+  color: var(--encre);
+  background: #fff;
+  border: 1px solid #e0e4e8;
+  border-radius: 8px;
+}
+
 .btnSecondary {
   display: block;
   width: calc(100% - 32px);

@@ -12,9 +12,18 @@ test("Démo : le cas passant", async ({ page }) => {
     await expect(page.getByText("Assistant social")).toBeVisible();
   });
 
+  await test.step("Je saisis une note pendant la visite", async () => {
+    await page.getByPlaceholder("Ce que je vois, ce que j'entends pendant la visite…").fill(
+      "Léa joue calmement, le père est présent et attentif."
+    );
+  });
+
   await test.step("Je choisis une action", async () => {
     await page.getByRole("button", { name: "Capturer ce que j'entends" }).click();
     await expect(page.getByText("Rédigé par l'assistant")).toBeVisible();
+    await expect(
+      page.getByText("Léa joue calmement, le père est présent et attentif.")
+    ).toBeVisible();
   });
 
   await test.step("J'envoie le rapport au magistrat", async () => {
