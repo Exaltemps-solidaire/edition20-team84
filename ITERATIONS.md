@@ -1,0 +1,66 @@
+# Plan d'itérations — La Sauvegarde du Nord
+
+**Plan validé le 2026-11-17.**
+
+- **Source du plan** : proposé par l'agent (aucun plan d'itérations trouvé dans la passation : ni `cadrage/*iteration*`, ni clé `iterations` dans `passation.json`).
+- **Temps restant annoncé** : 120 minutes, annoncé le 2026-11-17 à 21:14 ; reconfirmé à ~110-115 minutes au début de l'itération 1.
+- **Durée du tour de test de l'équipe** : 10 minutes (valeur par défaut, le développeur ne savait pas).
+- **Capacité estimée** : ~25 min/itération (10 min codage + ~5 min publication + 10 min test), sauf l'itération 1 qui absorbe aussi le démarrage de la plateforme et le premier déploiement (estimée ~35 min). Soit environ **4 itérations** dans le temps restant, avec peu de marge.
+
+## Ce qui sort du périmètre (✂️)
+
+- La famille d'idées « Idées dont le sens reste à préciser » (un jeu / un jumeau / un ballon, 1 point, sens non tranché par la squad — cf. `2-idees-priorisees.md`) : non construite, trop floue, trop peu priorisée.
+- La génération réelle du rapport par un modèle de langage (`llm.internal`) : les hypothèses de l'équipe sont vides (`5-hypotheses.md` : « Pas encore produit »), donc aucun critère d'acceptation métier n'encadre ce choix pour l'instant. Elle est planifiée en itération 3+ (« à venir »), pas avant.
+- Toute persistance réelle (base `team84`) des rapports : à introduire seulement quand l'écran 2 sera stabilisé.
+
+## ⚠️ Points incertains
+
+- Les hypothèses de version, le plan de livraison et le PRD de la squad sont tous les trois « Pas encore produit ». Les critères d'acceptation ci-dessous sont donc proposés par l'agent à partir du prototype retenu et de la problématique, **pas** issus d'une hypothèse validée par les cadreurs — à faire confirmer par eux au prochain tour de test.
+- L'écran 2 du prototype est explicitement marqué par la squad « en cours de réflexion — son contenu reste à préciser ». L'itération 2 le reproduit tel quel (texte en dur), en attendant une clarification.
+- Le budget de 35 min pour l'itération 1 suppose que la plateforme core (Postgres, registre, etc.) est déjà en cours de démarrage en arrière-plan pendant le codage ; si elle n'a pas encore été lancée, ajouter le temps de démarrage.
+
+---
+
+## Itération 1 : Le squelette est en ligne et montre l'écran « Vue de la situation »
+
+- **Dans le périmètre** :
+  - Démarrer la plateforme core en arrière-plan, créer la base `team84`.
+  - Reproduire fidèlement l'écran 1 du prototype retenu (fiche « Famille Martin », schéma des acteurs Enfant/Juge/Assistant → Parent, liste des 3 actions) avec des données en dur dans le frontend.
+  - Poser `.env.example` et `DEPLOIEMENT.md` (le reste du gabarit `api/`/`frontend/` existe déjà).
+  - Écrire `app/podman-compose.yml`, construire/publier les images, déployer sur 8080/8081.
+- **Hors périmètre** : l'écran 2 (rédaction), toute génération IA, toute action réelle des boutons au-delà d'une navigation visuelle.
+- **Critères d'acceptation** :
+  - Étant donné l'URL publique ouverte dans un navigateur, quand la page d'accueil se charge, alors on voit la fiche « Famille Martin » avec le schéma des 3 acteurs et les 3 actions, conforme au prototype.
+  - Étant donné `/health` (8081) et `/sante` (8080) interrogés, quand on les appelle, alors chacun répond 200 avec un corps non vide.
+  - Étant donné un clic sur une des 3 actions, quand il est déclenché, alors l'application navigue sans erreur JavaScript visible.
+- **Hypothèse de l'équipe couverte** : aucune (hypothèses vides) — couvre la famille d'idées n°1 du vote, « Capturer ce qui est dit ou vécu pendant l'intervention » (10 points, la plus priorisée).
+- **Codage estimé** : 10 minutes
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, un composant d'affichage de la fiche/schéma, `.env.example`, `DEPLOIEMENT.md`, `app/podman-compose.yml` (~5 fichiers, hors tests)
+- **Tests unitaires prévus** : aucune règle métier dans cette itération (affichage de données statiques) → 0 test, conforme à la DoD qui exclut les tests sur du balisage pur. Si une règle apparaît (ex. calcul d'ancienneté de la mesure), elle sera testée.
+- **Étapes ajoutées à la démo** (`e2e/demo.spec.ts`) : ouvrir la page, vérifier la présence de « Famille Martin » et des 3 actions.
+- **Bilan** : _à remplir en fin d'itération._
+
+## Itération 2 : L'écran de rédaction du rapport est visible et navigable
+
+- **Dans le périmètre** :
+  - Reproduire l'écran 2 du prototype (notes capturées, texte « rédigé par l'assistant » en dur, bouton « Envoyer au magistrat »), tel quel — y compris le bandeau « en cours de réflexion » de la squad, pour ne pas sur-promettre une fonctionnalité non cadrée.
+  - Navigation complète écran 1 ↔ écran 2.
+  - Un état de confirmation simple au clic sur « Envoyer au magistrat » (pas d'envoi réel).
+- **Hors périmètre** : génération IA réelle, édition persistée du texte, envoi réel à un magistrat.
+- **Critères d'acceptation** :
+  - Étant donné l'écran 1 affiché, quand on clique sur une action, alors on arrive sur l'écran 2 avec le texte du rapport pré-rempli, identique au prototype.
+  - Étant donné l'écran 2 affiché, quand on clique sur « Envoyer au magistrat », alors un message de confirmation apparaît, sans erreur.
+  - Étant donné l'écran 2 affiché, quand on clique sur « Reprendre plus tard », alors on revient sur l'écran 1.
+- **Hypothèse de l'équipe couverte** : aucune (hypothèses vides) — couvre la famille d'idées n°2 du vote, « Un outil ou agent numérique pour accompagner la rédaction » (9 points).
+- **Codage estimé** : 8 minutes
+- **Fichiers prévus** : `frontend/src/app/page.tsx` ou nouveau composant d'écran, logique de navigation partagée, éventuel test de cette logique (~4 fichiers, hors tests)
+- **Tests unitaires prévus** : 1 test sur la logique de navigation entre écrans si elle devient une fonction isolée (pas de test sur le balisage lui-même).
+- **Étapes ajoutées à la démo** : cliquer une action depuis l'écran 1, vérifier l'arrivée sur l'écran 2, cliquer « Envoyer au magistrat », vérifier la confirmation.
+- **Bilan** : _à remplir en fin d'itération._
+
+## À venir (non détaillé)
+
+1. Brancher une vraie génération assistée du texte du rapport à partir de notes saisies par l'utilisateur (via `llm.internal`), en remplacement du texte en dur — sous réserve de cadrage des hypothèses avec l'équipe.
+2. Permettre la saisie/capture de notes réelles pendant l'intervention (famille d'idées n°1, au-delà de l'affichage statique).
+3. Persister les rapports (base `team84`) pour qu'ils survivent à un rechargement.
+4. Stabilisation finale pour le pitch (dernière itération du temps imparti).
