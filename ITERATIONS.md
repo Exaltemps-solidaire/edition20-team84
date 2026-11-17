@@ -83,9 +83,27 @@
     - `frontend/src/app/page.module.css` : styles de l'écran rapport (bandeau, bloc rapport, boutons) — sert les 3 critères.
     - `e2e/demo.spec.ts` : 2 étapes ajoutées (envoyer, reprendre plus tard) — démonstration, hors DoD.
 
+## Itération 3 : Les notes de l'intervention sont saisies par l'utilisateur, pas figées
+
+- **Temps restant annoncé au début** : ~85-95 minutes.
+- **⚠️ Changement d'ordre par rapport au plan initial** : l'« À venir » plaçait la génération IA du rapport (`llm.internal`) en premier. Les hypothèses de l'équipe restent vides sur ce point (`5-hypotheses.md` : « Pas encore produit ») — aucun cadrage ne l'encadre encore. Je passe donc devant la saisie de notes réelles (famille d'idées n°1, la plus priorisée, 10 points), qui ne dépend d'aucun cadrage en attente. À faire valider par les cadreurs au prochain tour de test.
+- **Dans le périmètre** :
+  - Remplacer les notes en dur de l'écran « Vue de la situation » par un champ de saisie libre (texte), conservé en mémoire (state React, pas de persistance).
+  - L'écran « Rapport » affiche ces notes saisies à la place du texte figé (le texte du rapport lui-même reste en dur tant que la génération IA n'est pas cadrée).
+- **Hors périmètre** : génération IA du texte, persistance en base, validation/format des notes.
+- **Critères d'acceptation** :
+  - Étant donné l'écran 1 affiché, quand je saisis du texte dans le champ de notes, alors il est conservé si je navigue vers l'écran rapport puis reviens.
+  - Étant donné des notes vides, quand j'arrive sur l'écran rapport, alors un texte par défaut s'affiche (pas d'erreur).
+  - Étant donné des notes saisies, quand j'arrive sur l'écran rapport, alors elles y sont visibles.
+- **Hypothèse de l'équipe couverte** : aucune (hypothèses vides) — couvre la famille d'idées n°1, « Capturer ce qui est dit ou vécu pendant l'intervention ».
+- **Codage estimé** : 8 minutes
+- **Fichiers prévus** : `frontend/src/app/page.tsx`, `frontend/src/app/page.module.css` (~2 fichiers, hors tests)
+- **Tests unitaires prévus** : aucune règle métier isolable pour l'instant (état de saisie simple) → à réévaluer si une règle de validation apparaît.
+- **Étapes ajoutées à la démo** : saisir une note sur l'écran 1, vérifier sa présence sur l'écran rapport.
+- **Bilan** : _à remplir en fin d'itération._
+
 ## À venir (non détaillé)
 
-1. Brancher une vraie génération assistée du texte du rapport à partir de notes saisies par l'utilisateur (via `llm.internal`), en remplacement du texte en dur — sous réserve de cadrage des hypothèses avec l'équipe.
-2. Permettre la saisie/capture de notes réelles pendant l'intervention (famille d'idées n°1, au-delà de l'affichage statique).
-3. Persister les rapports (base `team84`) pour qu'ils survivent à un rechargement.
-4. Stabilisation finale pour le pitch (dernière itération du temps imparti).
+1. Brancher une vraie génération assistée du texte du rapport à partir des notes saisies (via `llm.internal`), en remplacement du texte en dur — sous réserve de cadrage des hypothèses avec l'équipe.
+2. Persister les rapports (base `team84`) pour qu'ils survivent à un rechargement.
+3. Stabilisation finale pour le pitch (dernière itération du temps imparti).
