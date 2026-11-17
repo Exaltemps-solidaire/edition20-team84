@@ -111,8 +111,27 @@
     - `frontend/src/app/page.module.css` : style `.notesInput` — sert les 3 critères.
     - `e2e/demo.spec.ts` : étape de saisie de note ajoutée, et vérification de sa présence sur l'écran rapport — démonstration, hors DoD.
 
+## Itération 4 : La note saisie survit à un rechargement de la page
+
+- **Temps restant annoncé au début** : ~55-65 minutes. Avec ~25 min/itération, il reste de la place pour cette itération et une dernière de stabilisation.
+- **❗️ Dépendance nouvelle** : premier usage de Postgres (base `team84`, déjà créée) et d'un client DB dans `api/`. Ajoute `pg` (ou équivalent) aux dépendances de `api/`, et les variables `DB_HOST`/`DB_NAME`/`DB_USER`/`DB_PASSWORD` dans `podman-compose.yml`.
+- **Dans le périmètre** :
+  - L'API expose une route pour enregistrer et relire la note de la visite en cours (une seule note, pas de liste, pas d'authentification — hors périmètre de la passation).
+  - Le frontend appelle cette route en chemin relatif (`/api/v1/...`) au lieu de ne garder la note qu'en state React.
+  - Table minimale dans la base `team84` (une ligne suffit pour ce cas).
+- **Hors périmètre** : plusieurs familles/visites, historique, authentification, édition concurrente.
+- **Critères d'acceptation** :
+  - Étant donné une note saisie et enregistrée, quand je recharge la page, alors elle est toujours affichée sur l'écran 1 et sur l'écran rapport.
+  - Étant donné l'API relancée (redéploiement), quand je recharge la page, alors la note précédemment enregistrée est toujours là (persistée en base, pas en mémoire du processus).
+  - Étant donné la base inaccessible, quand je charge la page, alors l'application ne plante pas (dégrade vers une note vide, pas d'erreur visible bloquante).
+- **Hypothèse de l'équipe couverte** : aucune (hypothèses vides) — prolonge la famille d'idées n°1 en rendant la capture réelle plutôt que volatile.
+- **Codage estimé** : 9 minutes
+- **Fichiers prévus** : `api/src/server.ts` (ou nouveau routeur), accès à la base dans `api/`, `frontend/src/app/page.tsx` (appel fetch), `podman-compose.yml` (ajout des variables `DB_*`) (~4-5 fichiers, hors tests)
+- **Tests unitaires prévus** : 1 à 2 tests sur la logique de lecture/écriture de la note côté API (pas sur le câblage HTTP lui-même).
+- **Étapes ajoutées à la démo** : recharger la page après saisie d'une note, vérifier qu'elle est toujours affichée.
+- **Bilan** : _à remplir en fin d'itération._
+
 ## À venir (non détaillé)
 
 1. Brancher une vraie génération assistée du texte du rapport à partir des notes saisies (via `llm.internal`), en remplacement du texte en dur — sous réserve de cadrage des hypothèses avec l'équipe.
-2. Persister les rapports (base `team84`) pour qu'ils survivent à un rechargement.
-3. Stabilisation finale pour le pitch (dernière itération du temps imparti).
+2. Stabilisation finale pour le pitch (dernière itération du temps imparti).
