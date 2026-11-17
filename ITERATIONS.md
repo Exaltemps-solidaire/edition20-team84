@@ -55,6 +55,7 @@
 
 ## Itération 2 : L'écran de rédaction du rapport est visible et navigable
 
+- **Temps restant annoncé au début** : ~90-100 minutes (le développeur ne s'est pas inquiété d'un écart important depuis l'itération 1).
 - **Dans le périmètre** :
   - Reproduire l'écran 2 du prototype (notes capturées, texte « rédigé par l'assistant » en dur, bouton « Envoyer au magistrat »), tel quel — y compris le bandeau « en cours de réflexion » de la squad, pour ne pas sur-promettre une fonctionnalité non cadrée.
   - Navigation complète écran 1 ↔ écran 2.
@@ -69,7 +70,18 @@
 - **Fichiers prévus** : `frontend/src/app/page.tsx` ou nouveau composant d'écran, logique de navigation partagée, éventuel test de cette logique (~4 fichiers, hors tests)
 - **Tests unitaires prévus** : 1 test sur la logique de navigation entre écrans si elle devient une fonction isolée (pas de test sur le balisage lui-même).
 - **Étapes ajoutées à la démo** : cliquer une action depuis l'écran 1, vérifier l'arrivée sur l'écran 2, cliquer « Envoyer au magistrat », vérifier la confirmation.
-- **Bilan** : _à remplir en fin d'itération._
+- **Bilan** :
+  - Durée de codage réelle : 1 minute (pas de dépassement).
+  - Critères satisfaits : les 3. Clic sur une action → écran rapport avec texte pré-rempli ; clic « Envoyer au magistrat » → confirmation ; clic « Reprendre plus tard » → retour à l'écran 1.
+  - Reporté : rien.
+  - Harnais : `./scripts/verifier-deployabilite.sh` → aucune borne ni alarme. `npm test` → 5 tests passent (2 existants + 3 nouveaux sur `prochainEcran`, la logique de transition entre écrans). `./scripts/signaler-version.sh 2` accepté du premier coup.
+  - Démo (`e2e/demo.spec.ts`) étendue avec 2 nouvelles étapes (envoyer, reprendre plus tard) et rejouée contre `localhost:8080` : passe. `URL_PUBLIQUE` non testable depuis la machine — à vérifier par le développeur.
+  - **Modifications** :
+    - `frontend/src/app/navigation.ts` : fonction pure `prochainEcran` (règle de transition entre les 2 écrans) — sert les 3 critères.
+    - `frontend/src/app/navigation.test.ts` : 3 tests sur `prochainEcran` — DoD point 2.
+    - `frontend/src/app/page.tsx` : ajoute l'écran « Rapport d'intervention » (notes, texte en dur, bandeau « en cours de réflexion », boutons envoyer/reprendre), branché sur `prochainEcran` — sert les 3 critères.
+    - `frontend/src/app/page.module.css` : styles de l'écran rapport (bandeau, bloc rapport, boutons) — sert les 3 critères.
+    - `e2e/demo.spec.ts` : 2 étapes ajoutées (envoyer, reprendre plus tard) — démonstration, hors DoD.
 
 ## À venir (non détaillé)
 
